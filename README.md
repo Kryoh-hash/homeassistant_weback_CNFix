@@ -4,6 +4,8 @@
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/integration)\
 ![Maintenance](https://img.shields.io/maintenance/yes/2026?style=flat-square)
 
+***** THIS FORK FIXES THE CN SERVER CONNECTION ISSUES *****
+
 Home Assistant component for controlling robot from brand like : Neatsvor / Tesvor / Orfeld / Abir...
 This component can control robot using WeBack app.
 
