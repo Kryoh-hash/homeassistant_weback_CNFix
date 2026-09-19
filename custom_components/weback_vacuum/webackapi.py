@@ -110,9 +110,8 @@ class WebackApi:
             self.wss_url = resp["data"]["wss_url"]
             self.api_url = resp["data"]["api_url"]
 
-            # Workaround for the CN API endpoint currently returned by
-            # the authentication server but not available in public DNS.
-            # The API is accessible through the authentication host instead.
+            # Workaround for CN region endpoints returned by the
+            # authentication server but currently not resolvable/usable.
             if self.region_name == "cn-north-1":
                 _LOGGER.warning(
                     "WebackApi: using CN API endpoint "
@@ -121,6 +120,14 @@ class WebackApi:
                     self.api_url,
                 )
                 self.api_url = "https://user.grit-cloud.cn/prod/api"
+
+                _LOGGER.warning(
+                    "WebackApi: using CN WSS endpoint "
+                    "wss://user.grit-cloud.cn/prod/wss instead of "
+                    "server-provided endpoint %s",
+                    self.wss_url,
+                )
+                self.wss_url = "wss://user.grit-cloud.cn/prod/wss"
 
             self.token_duration = resp["data"]["expired_time"] - 60
 
