@@ -1,87 +1,90 @@
-# WeBack component for HomeAssistant
+# WeBack component for Home Assistant
 
 [![](https://img.shields.io/github/release/insidethepixel/homeassistant_weback/all.svg?style=for-the-badge)](https://github.com/insidethepixel/homeassistant_weback)
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/integration)\
+[![hacs\_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/integration)
 ![Maintenance](https://img.shields.io/maintenance/yes/2026?style=flat-square)
 
-***** THIS FORK FIXES THE CN SERVER CONNECTION ISSUES *****
+> **This fork includes a fix for WeBack accounts using the CN (`cn-north-1`) region.**
+>
+> The WeBack authentication service may return an API endpoint under `elapp.grit-cloud.cn` that is currently not resolvable via public DNS. This fork uses the working `user.grit-cloud.cn` API endpoint for CN-region accounts, restoring robot discovery and integration setup.
 
-Home Assistant component for controlling robot from brand like : Neatsvor / Tesvor / Orfeld / Abir...
-This component can control robot using WeBack app.
+Home Assistant component for controlling robots from brands such as **Neatsvor, Tesvor, Orfeld, Abir**, and others.
 
-> Please note that several of these robot brands also use the Tuya/Smartlife platform in parallel (depending on the model). If your robot works with Tuya/Smartlife this integration will not be compatible.
+This component controls robots through the **WeBack** cloud platform.
 
-> This integration is not compatible with Tesvor robot models that use the “TESVOR HOME” application
+> **Please note:** Several of these robot brands also use the Tuya/Smart Life platform in parallel, depending on the model. If your robot works with Tuya/Smart Life, this integration will not be compatible.
 
-## Installation (with HACS)
+> This integration is not compatible with Tesvor robot models that use the **TESVOR HOME** application.
 
-1. Got to HACS
-2. Integrations
-3. EXPLORE & DOWNLOAD REPOSITORIES
-4. Enter "Weback"
-5. DOWNLOAD THIS REPOSITORY
+## Installation with HACS
 
-## Installation (manual)
+1. Open **HACS**.
+2. Go to **Integrations**.
+3. Select **EXPLORE & DOWNLOAD REPOSITORIES**.
+4. Search for **WeBack**.
+5. Download this repository.
 
-1. Download last release.
-2. Unzip `weback_component` folder into your HomeAssistant : `custom_components`
-3. Restart HA
+## Manual installation
+
+1. Download the latest release.
+2. Extract the `weback_vacuum` folder into your Home Assistant `custom_components` directory.
+3. Restart Home Assistant.
 
 ## Configuration
 
-Edit your Home Assistant `configuration.yaml` and set :
+Edit your Home Assistant `configuration.yaml` and add:
 
-``` YAML
+```yaml
 weback_vacuum:
   username: <your WeBack email, required>
   password: <your WeBack password, required>
-  region: <your country phone code e.g. for france code is 33, required>
+  region: <your country phone code, e.g. France is 33, required>
   application: <configuration app, optional>
-  client_id: <api client, optional>
-  api_version: <api version used, optional>
-  language : <language code 2 chars, optional>
+  client_id: <API client, optional>
+  api_version: <API version used, optional>
+  language: <language code, 2 characters, optional>
 ```
 
-**username** : Login used to setup your robot application. \
-**password** : password.\
-**region** : code can be found here : https://en.wikipedia.org/wiki/List_of_country_calling_codes **provide only digit number. Do not insert leading "+"** \
-**application** : if you use "WeBack" do not try to change this field.  \
-**client_id**, **api_version**, **language**: seems to have no effect. Do not use it.
+**username**: Login used to set up your robot in the WeBack application.
+**password**: Your WeBack password.
+**region**: Your country calling code. See [List of country calling codes](https://en.wikipedia.org/wiki/List_of_country_calling_codes). **Use digits only; do not include the leading `+`.**
+**application**: If you use `WeBack`, do not change this value.
+**client_id**, **api_version**, **language**: These parameters appear to have no effect and normally do not need to be configured.
 
-Config example :
+### Configuration example
 
-``` YAML
+```yaml
 weback_vacuum:
   username: mymail@contactme.com
   password: mysupersecuredpassword
   region: 33
 ```
 
-> Do not use any leading/ending characters like < > " ' +
+> Do not use leading or trailing characters such as `< > " ' +` in configuration values.
 
-Once configuration set you can restart Home Assistant.
-After restart, a new vacuum entity is created with the name defined into WeBack apps.
+Once the configuration is set, restart Home Assistant.
 
+After the restart, a new vacuum entity will be created using the robot name defined in the WeBack application.
 
 ## Maps and Rooms
 
->  Maps are supported for LIDAR vacuum only.
+> **Maps are supported for LIDAR-equipped vacuum robots only.**
 
 Tested on:
-  - Electriq "Helga" iQlean-LR01
 
-Integration with [PiotrMachowski/lovelace-xiaomi-vacuum-map-card](https://github.com/PiotrMachowski/lovelace-xiaomi-vacuum-map-card) supports automatic map calibration and room boundaries.
+* Electriq "Helga" iQlean-LR01
 
-The vacuum entity has been modified to accept `send_command`s for room / segment cleaning.
+Integration with [lovelace-xiaomi-vacuum-map-card](https://github.com/PiotrMachowski/lovelace-xiaomi-vacuum-map-card) supports automatic map calibration and room boundaries.
 
-### Example `lovelace-xiaomi-vacuum-map-card` card setup
+The vacuum entity has been modified to accept `send_command` calls for room/segment cleaning.
 
-To support automatic room boundaries, the Lovelace card needs to be templated. An example of this using [iantrich/config-template-card](https://github.com/iantrich/config-template-card)
+### Example `lovelace-xiaomi-vacuum-map-card` configuration
 
-*Please set both vacuum and camera entities appropriately. `camera.robot_map` and `vacuum.robot` in this example*
+To support automatic room boundaries, the Lovelace card needs to be templated. An example using [config-template-card](https://github.com/iantrich/config-template-card) is shown below.
 
+*Please replace the vacuum and camera entities with the appropriate entities from your Home Assistant installation. In this example they are `camera.robot_map` and `vacuum.robot`.*
 
-``` YAML
+```yaml
 type: custom:config-template-card
 variables:
   ROOMS: states['camera.robot_map'].attributes.rooms
@@ -103,17 +106,21 @@ card:
       name: Rooms
       icon: mdi:floor-plan
       predefined_selections: ${ROOMS}
-
 ```
 
-## Issues
+## Issues and troubleshooting
 
-If you find any bug or you're experiencing any problem, please set your Home Assistant log level to debug before opening any issues. And provide full log.
-To set your HA into debug level copy this into your `configuration.yaml` :
+If you find a bug or experience any problems, please enable **debug logging** for this integration before opening an issue and provide the relevant log output.
 
-``` YAML
+Add the following to your `configuration.yaml`:
+
+```yaml
 logger:
-   default: error
-   logs:
-     custom_components.weback_vacuum: debug
+  default: error
+  logs:
+    custom_components.weback_vacuum: debug
 ```
+
+After changing the logging configuration, restart Home Assistant and reproduce the problem before collecting the logs.
+
+> **Security:** Please remove or redact sensitive information such as passwords, authentication tokens, email addresses, or other credentials before posting logs publicly.
